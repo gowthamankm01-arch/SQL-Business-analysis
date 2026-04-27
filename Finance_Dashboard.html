@@ -1,0 +1,570 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --navy: #0B1628;
+    --navy2: #112040;
+    --navy3: #1A3054;
+    --gold: #C9943A;
+    --gold2: #E8B85A;
+    --gold-pale: rgba(201,148,58,0.12);
+    --slate: #7A8EA8;
+    --slate2: #A4B4C8;
+    --white: #F4F7FB;
+    --green: #2ECC8A;
+    --red: #E05C5C;
+    --border: rgba(255,255,255,0.07);
+    --font-display: 'DM Serif Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .db {
+    background: var(--navy);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .db-header {
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .db-header-left { display: flex; align-items: center; gap: 14px; }
+
+  .db-logo {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .db-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--white);
+    letter-spacing: 0.01em;
+  }
+
+  .db-subtitle {
+    font-size: 11px;
+    color: var(--slate);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .db-header-right {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .db-period-btn {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--slate2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .db-period-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .db-period-btn.active { background: var(--gold-pale); border-color: var(--gold); color: var(--gold); }
+
+  .db-seg-select {
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--navy3);
+    color: var(--slate2);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .db-body { padding: 24px 28px; }
+
+  .db-watermark {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .db-watermark::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* KPI Strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(201,148,58,0.3); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .kpi-card:hover::before { opacity: 1; }
+
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .kpi-value {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .kpi-delta {
+    font-size: 11px;
+    font-weight: 500;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .kpi-delta.pos { color: var(--green); }
+  .kpi-delta.neg { color: var(--red); }
+
+  /* Charts grid */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .chart-panel {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .chart-panel.full { grid-column: 1 / -1; }
+
+  .panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--white);
+    letter-spacing: 0.01em;
+  }
+
+  .panel-meta {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-top: 2px;
+  }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    font-size: 11px; color: var(--slate2);
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Variance table */
+  .var-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .var-table thead th {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate);
+    font-weight: 600;
+    text-align: left;
+    padding: 0 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .var-table thead th:not(:first-child) { text-align: right; }
+  .var-table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--slate2);
+    vertical-align: middle;
+  }
+  .var-table tbody td:first-child { color: var(--white); font-weight: 500; }
+  .var-table tbody td:not(:first-child) { text-align: right; font-family: var(--font-mono); font-size: 11px; }
+  .var-table tbody tr:last-child td { border-bottom: none; }
+  .var-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .badge.pos { background: rgba(46,204,138,0.15); color: var(--green); }
+  .badge.neg { background: rgba(224,92,92,0.15); color: var(--red); }
+
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .footer-bar {
+    margin-top: 20px;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--gold);
+  }
+
+  .footer-meta {
+    font-size: 10px;
+    color: var(--slate);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 540px) {
+    .charts-grid, .bottom-grid { grid-template-columns: 1fr; }
+    .db-body { padding: 16px; }
+    .db-header { padding: 14px 16px; }
+  }
+</style>
+
+<div class="db">
+  <div class="db-header">
+    <div class="db-header-left">
+      <div class="db-logo">F</div>
+      <div>
+        <div class="db-title">Financial Performance Dashboard</div>
+        <div class="db-subtitle">Apex Financial Services Ltd. &nbsp;·&nbsp; FY 2024–25</div>
+      </div>
+    </div>
+    <div class="db-header-right">
+      <button class="db-period-btn active" onclick="setPeriod('monthly',this)">Monthly</button>
+      <button class="db-period-btn" onclick="setPeriod('quarterly',this)">Quarterly</button>
+      <select class="db-seg-select" id="segSel" onchange="render()">
+        <option value="all">All Segments</option>
+        <option value="retail">Retail Banking</option>
+        <option value="wealth">Wealth Management</option>
+        <option value="insurance">Insurance</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="db-body">
+    <div class="db-watermark">Executive Summary &nbsp;—&nbsp; FY 2024–25</div>
+
+    <div class="kpi-strip" id="kpiStrip"></div>
+
+    <div class="charts-grid">
+      <div class="chart-panel" style="grid-column: 1 / -1;">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Revenue, Expenses & Net Profit</div>
+            <div class="panel-meta">₹ Crores &nbsp;·&nbsp; Trend Analysis</div>
+          </div>
+          <div class="legend">
+            <span><span class="leg-dot" style="background:#C9943A"></span>Revenue</span>
+            <span><span class="leg-dot" style="background:#7A8EA8"></span>Expenses</span>
+            <span><span class="leg-dot" style="background:#2ECC8A"></span>Net Profit</span>
+          </div>
+        </div>
+        <div style="position:relative; height:220px;">
+          <canvas id="revChart" role="img" aria-label="Revenue, expenses and net profit trend chart for FY2024-25">Revenue and expense trends across FY2024-25.</canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Revenue Mix</div>
+            <div class="panel-meta">By Business Segment</div>
+          </div>
+        </div>
+        <div class="legend" id="pieLegend" style="margin-bottom: 12px;"></div>
+        <div style="position:relative; height:180px;">
+          <canvas id="pieChart" role="img" aria-label="Revenue mix donut chart by segment">Revenue segment distribution.</canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Expense Breakdown</div>
+            <div class="panel-meta">₹ Crores &nbsp;·&nbsp; FY 2024–25</div>
+          </div>
+        </div>
+        <div style="position:relative; height:220px;">
+          <canvas id="expChart" role="img" aria-label="Expense breakdown by category">Expense breakdown by category.</canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel full" style="grid-column: 1 / -1;">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">KPI Variance Analysis</div>
+            <div class="panel-meta">Actual vs. Budget &nbsp;·&nbsp; Full Year</div>
+          </div>
+        </div>
+        <table class="var-table">
+          <thead>
+            <tr>
+              <th>Key Performance Indicator</th>
+              <th>Budget</th>
+              <th>Actual</th>
+              <th>Variance</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="varianceTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <div class="footer-brand">Apex Financial Services Ltd.</div>
+      <div class="footer-meta">Confidential &nbsp;·&nbsp; For Internal Use Only &nbsp;·&nbsp; Data as of March 2025</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA = {
+  monthly: {
+    labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+    revenue: {
+      all:       [142,151,148,160,155,168,172,165,180,175,183,195],
+      retail:    [68,72,71,76,74,80,82,79,86,83,87,93],
+      wealth:    [48,51,50,54,52,57,58,56,61,59,62,66],
+      insurance: [26,28,27,30,29,31,32,30,33,33,34,36]
+    },
+    expenses: {
+      all:       [98,103,101,109,106,114,116,112,121,118,123,130],
+      retail:    [47,49,48,52,51,55,56,54,58,57,59,62],
+      wealth:    [33,35,34,37,36,39,40,38,42,40,42,45],
+      insurance: [18,19,19,20,19,20,20,20,21,21,22,23]
+    }
+  },
+  quarterly: {
+    labels: ['Q1 FY25','Q2 FY25','Q3 FY25','Q4 FY25'],
+    revenue: { all:[441,483,517,553], retail:[211,230,247,263], wealth:[149,163,175,187], insurance:[81,90,95,103] },
+    expenses: { all:[302,329,349,371], retail:[144,158,168,178], wealth:[102,112,120,127], insurance:[56,59,61,66] }
+  }
+};
+
+const KPIS_BASE = {
+  all:[
+    {label:'Total Revenue',value:'₹1,994 Cr',delta:'+11.2%',pos:true},
+    {label:'Net Profit',value:'₹602 Cr',delta:'+8.7%',pos:true},
+    {label:'Cost-to-Income',value:'62.3%',delta:'-1.4pp',pos:true},
+    {label:'NIM',value:'3.42%',delta:'+0.18pp',pos:true},
+    {label:'AUM Growth',value:'+14.6%',delta:'vs 12.1% LY',pos:true},
+    {label:'Claim Ratio',value:'67.2%',delta:'-2.1pp',pos:true},
+    {label:'Return on Equity',value:'16.8%',delta:'+1.2pp',pos:true},
+    {label:'NPL Ratio',value:'2.1%',delta:'+0.3pp',pos:false}
+  ],
+  retail:[
+    {label:'Revenue',value:'₹951 Cr',delta:'+10.4%',pos:true},
+    {label:'Net Profit',value:'₹276 Cr',delta:'+7.9%',pos:true},
+    {label:'NIM',value:'3.81%',delta:'+0.22pp',pos:true},
+    {label:'NPL Ratio',value:'2.4%',delta:'+0.4pp',pos:false},
+    {label:'CASA Ratio',value:'44.2%',delta:'+1.8pp',pos:true},
+    {label:'Cost-to-Income',value:'64.1%',delta:'-0.9pp',pos:true},
+    {label:'Loan Growth',value:'+13.2%',delta:'vs 10.5% LY',pos:true},
+    {label:'Yield on Advances',value:'9.4%',delta:'+0.3pp',pos:true}
+  ],
+  wealth:[
+    {label:'Revenue',value:'₹673 Cr',delta:'+12.8%',pos:true},
+    {label:'Net Profit',value:'₹219 Cr',delta:'+10.1%',pos:true},
+    {label:'AUM',value:'₹4,820 Cr',delta:'+14.6%',pos:true},
+    {label:'Revenue / Client',value:'₹8.2L',delta:'+6.2%',pos:true},
+    {label:'New Clients',value:'1,240',delta:'+18.3%',pos:true},
+    {label:'Cost-to-Income',value:'58.4%',delta:'-2.2pp',pos:true},
+    {label:'Churn Rate',value:'4.1%',delta:'-0.7pp',pos:true},
+    {label:'Equity Allocation',value:'62%',delta:'+4pp',pos:true}
+  ],
+  insurance:[
+    {label:'Revenue',value:'₹370 Cr',delta:'+9.8%',pos:true},
+    {label:'Net Profit',value:'₹107 Cr',delta:'+7.2%',pos:true},
+    {label:'Claim Ratio',value:'67.2%',delta:'-2.1pp',pos:true},
+    {label:'Renewal Rate',value:'83.6%',delta:'+1.4pp',pos:true},
+    {label:'New Policies',value:'8,400',delta:'+11.2%',pos:true},
+    {label:'Combined Ratio',value:'94.1%',delta:'-1.8pp',pos:true},
+    {label:'Solvency Ratio',value:'182%',delta:'+4pp',pos:true},
+    {label:'Persistency (13m)',value:'71.4%',delta:'+2.1pp',pos:true}
+  ]
+};
+
+const VARIANCE = [
+  {kpi:'Total Revenue (₹ Cr)', budget:'1,920', actual:'1,994', raw:[1920,1994], unit:'₹ Cr', lowerBetter:false},
+  {kpi:'Net Profit (₹ Cr)', budget:'570', actual:'602', raw:[570,602], unit:'₹ Cr', lowerBetter:false},
+  {kpi:'Cost-to-Income Ratio', budget:'63.5%', actual:'62.3%', raw:[63.5,62.3], unit:'%', lowerBetter:true},
+  {kpi:'Net Interest Margin', budget:'3.30%', actual:'3.42%', raw:[3.30,3.42], unit:'%', lowerBetter:false},
+  {kpi:'NPL Ratio', budget:'1.8%', actual:'2.1%', raw:[1.8,2.1], unit:'%', lowerBetter:true},
+  {kpi:'Return on Equity', budget:'15.5%', actual:'16.8%', raw:[15.5,16.8], unit:'%', lowerBetter:false},
+  {kpi:'AUM Growth', budget:'12.0%', actual:'14.6%', raw:[12,14.6], unit:'%', lowerBetter:false},
+];
+
+const EXP_LABELS = ['Staff Costs','IT & Infrastructure','Loan Provisions','Marketing','Compliance','Admin & Ops'];
+const EXP_DATA = { all:[412,198,225,89,76,173], retail:[198,88,180,42,34,76], wealth:[138,72,12,32,24,60], insurance:[76,38,33,15,18,37] };
+const SEG_MIX = { retail:47.7, wealth:33.7, insurance:18.6 };
+const PIE_COLORS = ['#C9943A','#2ECC8A','#7A8EA8'];
+const SEG_COLORS = { retail:'#C9943A', wealth:'#2ECC8A', insurance:'#7A8EA8' };
+const SEGS = { all:'All Segments', retail:'Retail Banking', wealth:'Wealth Mgmt.', insurance:'Insurance' };
+
+let revChart, pieChart, expChart, activePeriod = 'monthly';
+
+function setPeriod(p, btn) {
+  activePeriod = p;
+  document.querySelectorAll('.db-period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const seg = document.getElementById('segSel').value;
+  const d = DATA[activePeriod];
+  const rev = d.revenue[seg];
+  const exp = d.expenses[seg];
+  const profit = rev.map((v,i) => v - exp[i]);
+
+  // KPIs
+  document.getElementById('kpiStrip').innerHTML = KPIS_BASE[seg].map(k => `
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-delta ${k.pos ? 'pos' : 'neg'}">
+        ${k.pos ? '▲' : '▼'} ${k.delta} YoY
+      </div>
+    </div>`).join('');
+
+  // Revenue chart
+  if (revChart) revChart.destroy();
+  revChart = new Chart(document.getElementById('revChart'), {
+    type: 'line',
+    data: {
+      labels: d.labels,
+      datasets: [
+        {label:'Revenue', data:rev, borderColor:'#C9943A', backgroundColor:'rgba(201,148,58,0.08)', tension:0.4, fill:true, pointRadius:3, pointBackgroundColor:'#C9943A', borderWidth:2},
+        {label:'Expenses', data:exp, borderColor:'#7A8EA8', backgroundColor:'transparent', tension:0.4, borderDash:[5,3], pointRadius:3, pointBackgroundColor:'#7A8EA8', borderWidth:1.5},
+        {label:'Net Profit', data:profit, borderColor:'#2ECC8A', backgroundColor:'transparent', tension:0.4, borderDash:[2,3], pointRadius:3, pointBackgroundColor:'#2ECC8A', borderWidth:1.5}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{backgroundColor:'#112040', borderColor:'rgba(255,255,255,0.1)', borderWidth:1, titleColor:'#F4F7FB', bodyColor:'#A4B4C8', callbacks:{label: ctx => ' ₹' + ctx.parsed.y + ' Cr'}}},
+      scales:{
+        y:{ticks:{color:'#7A8EA8', font:{size:10}, callback:v=>'₹'+v}, grid:{color:'rgba(255,255,255,0.05)'}, border:{color:'transparent'}},
+        x:{ticks:{color:'#7A8EA8', font:{size:10}}, grid:{display:false}, border:{color:'rgba(255,255,255,0.07)'}}
+      }
+    }
+  });
+
+  // Pie chart
+  if (pieChart) pieChart.destroy();
+  const pieData = seg === 'all' ? [SEG_MIX.retail, SEG_MIX.wealth, SEG_MIX.insurance] : [100];
+  const pieLabels = seg === 'all' ? ['Retail Banking','Wealth Mgmt.','Insurance'] : [SEGS[seg]];
+  const pieColors = seg === 'all' ? PIE_COLORS : [SEG_COLORS[seg] || '#C9943A'];
+  document.getElementById('pieLegend').innerHTML = pieLabels.map((l,i) => `<span><span class="leg-dot" style="background:${pieColors[i]}"></span>${l} ${pieData[i].toFixed(1)}%</span>`).join('');
+  pieChart = new Chart(document.getElementById('pieChart'), {
+    type:'doughnut',
+    data:{labels:pieLabels, datasets:[{data:pieData, backgroundColor:pieColors, borderWidth:3, borderColor:'#112040', hoverOffset:6}]},
+    options:{responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{display:false}, tooltip:{backgroundColor:'#112040', borderColor:'rgba(255,255,255,0.1)', borderWidth:1, titleColor:'#F4F7FB', bodyColor:'#A4B4C8'}}}
+  });
+
+  // Expense chart
+  if (expChart) expChart.destroy();
+  expChart = new Chart(document.getElementById('expChart'), {
+    type:'bar',
+    data:{
+      labels:EXP_LABELS,
+      datasets:[{label:'Expenses', data:EXP_DATA[seg], backgroundColor:'rgba(201,148,58,0.2)', borderColor:'#C9943A', borderWidth:1, borderRadius:3, borderSkipped:false}]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{backgroundColor:'#112040', borderColor:'rgba(255,255,255,0.1)', borderWidth:1, titleColor:'#F4F7FB', bodyColor:'#A4B4C8', callbacks:{label:ctx=>' ₹'+ctx.parsed.x+' Cr'}}},
+      scales:{
+        x:{ticks:{color:'#7A8EA8', font:{size:10}, callback:v=>'₹'+v}, grid:{color:'rgba(255,255,255,0.05)'}, border:{color:'transparent'}},
+        y:{ticks:{color:'#A4B4C8', font:{size:10}}, grid:{display:false}, border:{color:'rgba(255,255,255,0.07)'}}
+      }
+    }
+  });
+
+  // Variance table
+  document.getElementById('varianceTbody').innerHTML = VARIANCE.map(r => {
+    const diff = r.raw[1] - r.raw[0];
+    const isPos = r.lowerBetter ? diff <= 0 : diff >= 0;
+    const varStr = (diff >= 0 ? '+' : '') + diff.toFixed(1) + (r.unit === '₹ Cr' ? ' Cr' : 'pp');
+    return `<tr>
+      <td>${r.kpi}</td>
+      <td>${r.budget}</td>
+      <td>${r.actual}</td>
+      <td style="color:${isPos ? '#2ECC8A' : '#E05C5C'}; font-weight:500;">${varStr}</td>
+      <td><span class="badge ${isPos ? 'pos' : 'neg'}">${isPos ? 'Ahead' : 'Behind'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+render();
+</script>
