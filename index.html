@@ -1,0 +1,446 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .root { font-family: var(--font-sans); background: var(--color-background-tertiary); padding: 0; }
+
+  .hdr {
+    background: #1D9E75;
+    padding: 18px 26px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .hdr-logo {
+    width: 38px; height: 38px; border-radius: var(--border-radius-md);
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 500; color: #fff; flex-shrink: 0;
+  }
+  .hdr-title { font-size: 16px; font-weight: 500; color: #fff; }
+  .hdr-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; letter-spacing: 0.06em; }
+
+  .body { padding: 20px 22px; }
+
+  .sec-label {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-text-secondary); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+
+  .query-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px; }
+
+  .qcard {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+  }
+  .qcard-top {
+    padding: 11px 14px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .qcard-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+
+  .badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); white-space: nowrap; }
+  .b-risk     { background: #FCEBEB; color: #A32D2D; }
+  .b-segment  { background: #E6F1FB; color: #185FA5; }
+  .b-perf     { background: #EAF3DE; color: #3B6D11; }
+  .b-insight  { background: #FAEEDA; color: #854F0B; }
+
+  .qsql {
+    padding: 12px 14px;
+    font-family: var(--font-mono); font-size: 10px; line-height: 1.8;
+    background: #F8F7F2;
+    overflow-x: auto;
+  }
+  @media (prefers-color-scheme: dark) {
+    .qsql { background: #1A1F2B; }
+  }
+
+  .kw  { color: #534AB7; font-weight: 500; }
+  .fn  { color: #0F6E56; }
+  .str { color: #3B6D11; }
+  .num { color: #854F0B; }
+  .cm  { color: #888780; font-style: italic; }
+  .tbl { color: #185FA5; }
+
+  .res-wrap { padding: 10px 14px 12px; }
+  .res-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .res-table th {
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-text-secondary); padding: 5px 6px;
+    border-bottom: 0.5px solid var(--color-border-tertiary); text-align: left; font-weight: 500;
+  }
+  .res-table th:not(:first-child) { text-align: right; }
+  .res-table td {
+    padding: 5px 6px; font-size: 10px; font-family: var(--font-mono);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    color: var(--color-text-secondary); text-align: right;
+  }
+  .res-table td:first-child { font-family: var(--font-sans); font-size: 11px; color: var(--color-text-primary); text-align: left; }
+  .res-table tr:last-child td { border-bottom: none; }
+
+  .pill { display: inline-block; font-size: 9px; font-weight: 500; padding: 2px 6px; border-radius: var(--border-radius-md); }
+  .p-hi  { background: #FCEBEB; color: #A32D2D; }
+  .p-md  { background: #FAEEDA; color: #854F0B; }
+  .p-lo  { background: #EAF3DE; color: #3B6D11; }
+  .p-seg { background: #E6F1FB; color: #185FA5; }
+  .p-cr  { background: #EEEDFE; color: #3C3489; }
+
+  .finding {
+    padding: 8px 14px;
+    background: #E1F5EE;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    font-size: 11px; color: #0F6E56; line-height: 1.5;
+  }
+  .finding strong { color: #085041; }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin-bottom: 18px;
+  }
+  .kpi {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 14px 16px;
+  }
+  .kpi-lbl { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .kpi-val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1; margin-bottom: 4px; }
+  .kpi-d { font-size: 11px; font-weight: 500; }
+  .kpi-d.up   { color: #0F6E56; }
+  .kpi-d.down { color: #A32D2D; }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .cpanel {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 16px 18px;
+  }
+  .cpanel.wide { grid-column: 1 / -1; }
+  .cp-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .cp-sub { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 12px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .ldot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+  .footer { margin-top: 18px; padding-top: 14px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .footer-brand { font-size: 12px; font-weight: 500; color: #1D9E75; }
+  .footer-meta { font-size: 10px; color: var(--color-text-secondary); letter-spacing: 0.05em; }
+
+  @media (max-width: 540px) {
+    .query-grid, .charts-grid { grid-template-columns: 1fr; }
+    .cpanel.wide { grid-column: 1; }
+    .body { padding: 14px 14px; }
+  }
+</style>
+
+<h2 class="sr-only">SQL-based banking business data analysis for NorthStar Bank, FY 2024–25, showing 5 queries, results, and an MIS dashboard.</h2>
+
+<div class="root">
+  <div class="hdr">
+    <div class="hdr-logo">S</div>
+    <div>
+      <div class="hdr-title">SQL-Based Business Data Analysis</div>
+      <div class="hdr-sub">NorthStar Bank &nbsp;·&nbsp; FY 2024–25 &nbsp;·&nbsp; Relational Database Insights</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="sec-label">SQL query analysis — 5 business patterns identified</div>
+
+    <div class="query-grid">
+
+      <div class="qcard">
+        <div class="qcard-top">
+          <div class="qcard-title">1. Loan default rate by product type</div>
+          <span class="badge b-risk">Risk</span>
+        </div>
+        <div class="qsql"><span class="cm">-- Default rates across loan products</span>
+<span class="kw">SELECT</span>
+  l.product_type,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total_loans,
+  <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> l.status <span class="kw">= </span><span class="str">'Defaulted'</span>
+      <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> defaults,
+  <span class="fn">ROUND</span>(defaults * <span class="num">100.0</span>
+      / total_loans, <span class="num">2</span>) <span class="kw">AS</span> default_rate
+<span class="kw">FROM</span> <span class="tbl">loans</span> l
+<span class="kw">GROUP BY</span> l.product_type
+<span class="kw">ORDER BY</span> default_rate <span class="kw">DESC</span>;</div>
+        <div class="res-wrap">
+          <table class="res-table">
+            <thead><tr><th>Product</th><th>Loans</th><th>Defaults</th><th>Rate</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>Personal Loan</td><td>4,820</td><td>386</td><td>8.01%</td><td><span class="pill p-hi">High</span></td></tr>
+              <tr><td>Credit Card</td><td>6,310</td><td>441</td><td>6.99%</td><td><span class="pill p-hi">High</span></td></tr>
+              <tr><td>Auto Loan</td><td>3,140</td><td>157</td><td>5.00%</td><td><span class="pill p-md">Medium</span></td></tr>
+              <tr><td>Home Loan</td><td>2,890</td><td>86</td><td>2.98%</td><td><span class="pill p-lo">Low</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="finding"><strong>Pattern:</strong> Personal loans carry 2.7× the default risk of home loans — flagged for credit policy review.</div>
+      </div>
+
+      <div class="qcard">
+        <div class="qcard-top">
+          <div class="qcard-title">2. Customer segmentation by AUM &amp; activity</div>
+          <span class="badge b-segment">Segment</span>
+        </div>
+        <div class="qsql"><span class="cm">-- Segment by AUM tier & txn frequency</span>
+<span class="kw">SELECT</span>
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> c.aum >= <span class="num">5000000</span> <span class="kw">THEN</span> <span class="str">'HNI'</span>
+    <span class="kw">WHEN</span> c.aum >= <span class="num">1000000</span> <span class="kw">THEN</span> <span class="str">'Affluent'</span>
+    <span class="kw">ELSE</span> <span class="str">'Mass Market'</span>
+  <span class="kw">END AS</span> segment,
+  <span class="fn">COUNT</span>(c.customer_id) <span class="kw">AS</span> customers,
+  <span class="fn">AVG</span>(t.monthly_txns) <span class="kw">AS</span> avg_txns,
+  <span class="fn">SUM</span>(c.aum) <span class="kw">AS</span> total_aum
+<span class="kw">FROM</span> <span class="tbl">customers</span> c
+<span class="kw">JOIN</span> <span class="tbl">transactions</span> t
+  <span class="kw">ON</span> c.customer_id = t.customer_id
+<span class="kw">GROUP BY</span> segment
+<span class="kw">ORDER BY</span> total_aum <span class="kw">DESC</span>;</div>
+        <div class="res-wrap">
+          <table class="res-table">
+            <thead><tr><th>Segment</th><th>Customers</th><th>Avg txns/mo</th><th>AUM</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill p-cr">HNI</span></td><td>1,240</td><td>42.3</td><td>₹2,840 Cr</td></tr>
+              <tr><td><span class="pill p-seg">Affluent</span></td><td>8,670</td><td>28.7</td><td>₹1,620 Cr</td></tr>
+              <tr><td><span class="pill p-lo">Mass Market</span></td><td>64,200</td><td>11.2</td><td>₹360 Cr</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="finding"><strong>Pattern:</strong> HNI segment (1.7% of customers) holds 59% of total AUM — priority retention target.</div>
+      </div>
+
+      <div class="qcard">
+        <div class="qcard-top">
+          <div class="qcard-title">3. Branch-wise revenue vs cost efficiency</div>
+          <span class="badge b-perf">Performance</span>
+        </div>
+        <div class="qsql"><span class="cm">-- Rank branches by cost-to-income ratio</span>
+<span class="kw">SELECT</span>
+  b.branch_name, b.region,
+  <span class="fn">SUM</span>(r.revenue) <span class="kw">AS</span> total_revenue,
+  <span class="fn">SUM</span>(r.opex) <span class="kw">AS</span> total_cost,
+  <span class="fn">ROUND</span>(opex * <span class="num">100.0</span>
+      / revenue, <span class="num">1</span>) <span class="kw">AS</span> cir_pct,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> cir_pct <span class="kw">ASC</span>
+  ) <span class="kw">AS</span> efficiency_rank
+<span class="kw">FROM</span> <span class="tbl">branches</span> b
+<span class="kw">JOIN</span> <span class="tbl">revenue_data</span> r
+  <span class="kw">ON</span> b.branch_id = r.branch_id
+<span class="kw">GROUP BY</span> b.branch_name, b.region
+<span class="kw">ORDER BY</span> efficiency_rank;</div>
+        <div class="res-wrap">
+          <table class="res-table">
+            <thead><tr><th>Branch</th><th>Revenue</th><th>OpEx</th><th>CIR</th><th>Rank</th></tr></thead>
+            <tbody>
+              <tr><td>Koramangala</td><td>₹48.2 Cr</td><td>₹25.4 Cr</td><td>52.7%</td><td>#1</td></tr>
+              <tr><td>Andheri West</td><td>₹44.6 Cr</td><td>₹24.8 Cr</td><td>55.6%</td><td>#2</td></tr>
+              <tr><td>Connaught Pl.</td><td>₹52.1 Cr</td><td>₹30.2 Cr</td><td>58.0%</td><td>#3</td></tr>
+              <tr><td>Salt Lake</td><td>₹31.4 Cr</td><td>₹21.8 Cr</td><td>69.4%</td><td>#8</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="finding"><strong>Pattern:</strong> Koramangala leads at 52.7% CIR; Salt Lake flagged for cost restructuring.</div>
+      </div>
+
+      <div class="qcard">
+        <div class="qcard-top">
+          <div class="qcard-title">4. Monthly transaction volume trend</div>
+          <span class="badge b-insight">Insight</span>
+        </div>
+        <div class="qsql"><span class="cm">-- YoY monthly txn volume with MoM growth</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, t.txn_date)
+    <span class="kw">AS</span> txn_month,
+  <span class="fn">COUNT</span>(t.txn_id) <span class="kw">AS</span> total_txns,
+  <span class="fn">SUM</span>(t.amount) <span class="kw">AS</span> total_value,
+  <span class="fn">LAG</span>(<span class="fn">SUM</span>(t.amount)) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> txn_month
+  ) <span class="kw">AS</span> prev_month,
+  <span class="fn">ROUND</span>((total_value - prev_month)
+    * <span class="num">100.0</span> / prev_month,
+    <span class="num">2</span>) <span class="kw">AS</span> mom_growth_pct
+<span class="kw">FROM</span> <span class="tbl">transactions</span> t
+<span class="kw">WHERE</span> t.txn_date >= <span class="str">'2024-04-01'</span>
+<span class="kw">GROUP BY</span> txn_month
+<span class="kw">ORDER BY</span> txn_month;</div>
+        <div class="res-wrap">
+          <table class="res-table">
+            <thead><tr><th>Month</th><th>Transactions</th><th>Value</th><th>MoM</th></tr></thead>
+            <tbody>
+              <tr><td>Oct 2024</td><td>2,84,120</td><td>₹1,840 Cr</td><td style="color:#0F6E56">+6.2%</td></tr>
+              <tr><td>Nov 2024</td><td>2,91,480</td><td>₹1,920 Cr</td><td style="color:#0F6E56">+4.3%</td></tr>
+              <tr><td>Dec 2024</td><td>3,18,640</td><td>₹2,210 Cr</td><td style="color:#0F6E56">+15.1%</td></tr>
+              <tr><td>Jan 2025</td><td>2,74,300</td><td>₹1,760 Cr</td><td style="color:#A32D2D">-20.4%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="finding"><strong>Pattern:</strong> Dec spike (+15.1%) driven by festive activity; Jan dip is seasonal, not structural.</div>
+      </div>
+
+      <div class="qcard" style="grid-column:1/-1">
+        <div class="qcard-top">
+          <div class="qcard-title">5. Early warning — high-risk loan accounts (5-table multi-join)</div>
+          <span class="badge b-risk">Risk</span>
+        </div>
+        <div class="qsql" style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;"><div><span class="cm">-- Flag accounts: overdue + low score + high utilisation</span>
+<span class="kw">SELECT</span>
+  c.customer_id, c.customer_name,
+  l.product_type,
+  l.outstanding_amount,
+  cr.credit_score,
+  u.utilisation_pct,
+  p.days_overdue,</div><div>  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> cr.credit_score < <span class="num">600</span>
+      <span class="kw">AND</span> u.utilisation_pct > <span class="num">80</span>
+      <span class="kw">AND</span> p.days_overdue > <span class="num">30</span>
+      <span class="kw">THEN</span> <span class="str">'Critical'</span>
+    <span class="kw">WHEN</span> cr.credit_score < <span class="num">650</span>
+      <span class="kw">AND</span> p.days_overdue > <span class="num">15</span>
+      <span class="kw">THEN</span> <span class="str">'Watch'</span>
+    <span class="kw">ELSE</span> <span class="str">'Monitor'</span>
+  <span class="kw">END AS</span> risk_flag
+<span class="kw">FROM</span> <span class="tbl">customers</span> c
+<span class="kw">JOIN</span> <span class="tbl">loans</span> l <span class="kw">ON</span> c.customer_id = l.customer_id
+<span class="kw">JOIN</span> <span class="tbl">credit_scores</span> cr <span class="kw">ON</span> c.customer_id = cr.customer_id
+<span class="kw">JOIN</span> <span class="tbl">utilisation</span> u <span class="kw">ON</span> l.loan_id = u.loan_id
+<span class="kw">JOIN</span> <span class="tbl">payments</span> p <span class="kw">ON</span> l.loan_id = p.loan_id
+<span class="kw">WHERE</span> risk_flag != <span class="str">'Monitor'</span>
+<span class="kw">ORDER BY</span> p.days_overdue <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">5</span>;</div></div>
+        <div class="res-wrap">
+          <table class="res-table">
+            <thead><tr><th>Customer</th><th>Product</th><th>Outstanding</th><th>Credit score</th><th>Utilisation</th><th>Days overdue</th><th>Flag</th></tr></thead>
+            <tbody>
+              <tr><td>Rajesh V.</td><td>Personal Loan</td><td>₹4.2L</td><td>542</td><td>88%</td><td>62</td><td><span class="pill p-hi">Critical</span></td></tr>
+              <tr><td>Priya S.</td><td>Credit Card</td><td>₹1.8L</td><td>574</td><td>91%</td><td>48</td><td><span class="pill p-hi">Critical</span></td></tr>
+              <tr><td>Arjun M.</td><td>Auto Loan</td><td>₹6.1L</td><td>618</td><td>74%</td><td>38</td><td><span class="pill p-hi">Critical</span></td></tr>
+              <tr><td>Sunita K.</td><td>Personal Loan</td><td>₹2.9L</td><td>634</td><td>68%</td><td>22</td><td><span class="pill p-md">Watch</span></td></tr>
+              <tr><td>Vikram D.</td><td>Credit Card</td><td>₹0.9L</td><td>641</td><td>72%</td><td>18</td><td><span class="pill p-md">Watch</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="finding"><strong>Pattern:</strong> 3 critical accounts identified across 5 joins — escalated to credit risk team for immediate NPA provisioning review.</div>
+      </div>
+
+    </div>
+
+    <div class="sec-label">MIS dashboard — aggregated insights from SQL analysis</div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-lbl">Total loan book</div><div class="kpi-val">₹4,820 Cr</div><div class="kpi-d up">+13.4% YoY</div></div>
+      <div class="kpi"><div class="kpi-lbl">Overall default rate</div><div class="kpi-val">5.8%</div><div class="kpi-d down">+0.4pp YoY</div></div>
+      <div class="kpi"><div class="kpi-lbl">Total customers</div><div class="kpi-val">74,110</div><div class="kpi-d up">+9.2% YoY</div></div>
+      <div class="kpi"><div class="kpi-lbl">Avg credit score</div><div class="kpi-val">692</div><div class="kpi-d down">-8 pts YoY</div></div>
+      <div class="kpi"><div class="kpi-lbl">Total AUM</div><div class="kpi-val">₹4,820 Cr</div><div class="kpi-d up">+14.6% YoY</div></div>
+      <div class="kpi"><div class="kpi-lbl">Critical risk accounts</div><div class="kpi-val">312</div><div class="kpi-d down">+42 vs last yr</div></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="cpanel">
+        <div class="cp-title">Default rate by product</div>
+        <div class="cp-sub">% of loans defaulted</div>
+        <div style="position:relative;height:190px;">
+          <canvas id="defChart" role="img" aria-label="Horizontal bar chart showing loan default rates: Personal Loan 8.01%, Credit Card 6.99%, Auto Loan 5%, Home Loan 2.98%">Default rates by product type.</canvas>
+        </div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cp-title">AUM by customer segment</div>
+        <div class="cp-sub">₹ Crores distribution</div>
+        <div class="legend">
+          <span><span class="ldot" style="background:#534AB7"></span>HNI 59%</span>
+          <span><span class="ldot" style="background:#1D9E75"></span>Affluent 34%</span>
+          <span><span class="ldot" style="background:#B4B2A9"></span>Mass 7%</span>
+        </div>
+        <div style="position:relative;height:155px;">
+          <canvas id="aumChart" role="img" aria-label="Donut chart: HNI 2840 Cr, Affluent 1620 Cr, Mass Market 360 Cr">AUM distribution by customer segment.</canvas>
+        </div>
+      </div>
+
+      <div class="cpanel wide">
+        <div class="cp-title">Monthly transaction value</div>
+        <div class="cp-sub">₹ Crores &nbsp;·&nbsp; Apr 2024 – Mar 2025</div>
+        <div class="legend">
+          <span><span class="ldot" style="background:#1D9E75"></span>Transaction value</span>
+          <span><span class="ldot" style="background:#534AB7; height:2px; border-radius:1px;"></span>Trend</span>
+        </div>
+        <div style="position:relative;height:190px;">
+          <canvas id="txnChart" role="img" aria-label="Line chart of monthly transaction values from April 2024 to March 2025, peaking in December at 2210 Cr">Monthly transaction volume trend FY2024-25.</canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-brand">NorthStar Bank — Business Intelligence Unit</div>
+      <div class="footer-meta">Confidential &nbsp;·&nbsp; SQL analysis report &nbsp;·&nbsp; FY 2024–25</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+const tickColor = isDark ? '#7A8EA8' : '#888780';
+const TT = { backgroundColor: isDark ? '#1A2535' : '#fff', borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderWidth: 1, titleColor: isDark ? '#F4F7FB' : '#1A1A1A', bodyColor: isDark ? '#A4B4C8' : '#5F5E5A', padding: 10 };
+
+new Chart(document.getElementById('defChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Personal Loan','Credit Card','Auto Loan','Home Loan'],
+    datasets: [{
+      data: [8.01, 6.99, 5.00, 2.98],
+      backgroundColor: ['#F09595','#FAC775','#9FE1CB','#5DCAA5'],
+      borderColor:     ['#A32D2D','#854F0B','#0F6E56','#085041'],
+      borderWidth: 1, borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => ' ' + c.parsed.x.toFixed(2) + '% default rate' } } },
+    scales: {
+      x: { ticks: { callback: v => v + '%', font: { size: 10 }, color: tickColor }, grid: { color: gridColor }, border: { color: 'transparent' } },
+      y: { ticks: { font: { size: 10 }, color: tickColor }, grid: { display: false }, border: { color: 'transparent' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('aumChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['HNI','Affluent','Mass Market'],
+    datasets: [{ data: [2840,1620,360], backgroundColor: ['#534AB7','#1D9E75','#B4B2A9'], borderWidth: 3, borderColor: isDark ? '#1A2535' : '#fff', hoverOffset: 5 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '64%',
+    plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => ' ₹' + c.parsed.toLocaleString('en-IN') + ' Cr' } } }
+  }
+});
+
+new Chart(document.getElementById('txnChart'), {
+  type: 'line',
+  data: {
+    labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+    datasets: [
+      { label: 'Txn value', data: [1420,1480,1510,1560,1530,1620,1840,1920,2210,1760,1890,2040], borderColor: '#1D9E75', backgroundColor: isDark ? 'rgba(29,158,117,0.1)' : 'rgba(29,158,117,0.08)', tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: '#1D9E75', borderWidth: 2 },
+      { label: 'Trend', data: [1420,1466,1512,1532,1539,1572,1653,1720,1830,1810,1850,1920], borderColor: '#534AB7', backgroundColor: 'transparent', tension: 0.4, borderDash: [4,3], pointRadius: 0, borderWidth: 1.5 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => ' ₹' + c.parsed.y.toLocaleString('en-IN') + ' Cr' } } },
+    scales: {
+      y: { ticks: { callback: v => '₹' + v, font: { size: 10 }, color: tickColor }, grid: { color: gridColor }, border: { color: 'transparent' } },
+      x: { ticks: { font: { size: 10 }, color: tickColor, autoSkip: false }, grid: { display: false }, border: { color: 'transparent' } }
+    }
+  }
+});
+</script>
